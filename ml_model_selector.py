@@ -156,6 +156,13 @@ class ModelSelector:
         # Use canary traffic allocation if available
         canary_data = request_context.get("canary_traffic")
         if canary_data:
+            total = sum(canary_data.values())
+            if not (99.9 <= total <= 100.1):
+                logger.warning(
+                    "Canary traffic percentages sum to %.1f, expected 100. Normalising.",
+                    total
+                )
+                canary_data = {k: v / total * 100 for k, v in canary_data.items()}
             rand = random.random()
             cumulative = 0
             
