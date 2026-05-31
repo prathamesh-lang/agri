@@ -2,6 +2,7 @@
 Implements Thompson sampling for optimal model allocation."""
 
 import logging
+from collections import deque
 import random
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -179,7 +180,7 @@ class ABTest:
 class ABTestManager:
     def __init__(self) -> None:
         self.active_tests: Dict[str, ABTest] = {}
-        self.completed_tests: List[ABTest] = []
+        self.completed_tests: deque = deque(maxlen=500)
 
     def create_test(
         self,
